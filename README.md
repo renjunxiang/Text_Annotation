@@ -23,11 +23,13 @@
 ### 一些说明
 1.不同于LSTM文本生成，CRF要求数据reshape回[batchsize, max_seq_len, num_tags]，所以生成的时候务必保证网络的shape和输入文本的shape一致。<br>
 <br>
-2.由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，所以效果也就凑合看看啦<br>
+2.由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，所以效果也就凑合看看啦。<br>
 <br>
-3.编码过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留春词语数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频词。所以我并没有使用texts_to_sequences，而是手动把超过num_words的编码转为num_words<br>
+3.编码过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留春词语数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频词。所以我并没有使用texts_to_sequences，而是手动把超过num_words的编码转为num_words。<br>
 <br>
-4.有时间我会尝试一下逐帧softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。
+4.分词的话相对标注简单一些，只要BMES基本就够了，实体识别的话标注会复杂一些，每个实体类别都有BME。<br>
+<br>
+5.有时间我会尝试一下逐帧softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。
 
 ## 成果展示
 **先要train.py进行训练，annotate.py用于预测(分词)，参考demo.py**<br>
