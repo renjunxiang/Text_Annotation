@@ -14,11 +14,11 @@
 ## **模块简介**
 ### 模块结构
 结构很简单，方法在Text_Annotation文件夹内，还有一个简单的demo。Text_Annotation文件夹包括：<br>
-* **数据**：小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！<br>
-* **预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
-* **网络**：model_clf.py，2层双向LSTM+CRF<br>
-* **训练**：train.py<br>
-* **生成**：annotate.py<br>
+**数据**：小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！<br>
+**预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
+**网络**：model_clf.py，2层双向LSTM+CRF<br>
+**训练**：train.py<br>
+**生成**：annotate.py<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)<br>
 
@@ -36,4 +36,4 @@
 ## 成果展示
 **先要train.py进行训练(我只训练了三万句话，完整数据好像有五十万句)，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
 <br>
-![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/demo.jpg)<br><br>
