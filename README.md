@@ -32,6 +32,6 @@
 5.有时间我会尝试一下逐帧softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。
 
 ## 成果展示
-**先要train.py进行训练，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
+**先要train.py进行训练(我只训练了三万句话，完整数据好像有七十万句)，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/demo.jpg)<br><br>
