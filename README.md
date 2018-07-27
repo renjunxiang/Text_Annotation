@@ -36,4 +36,4 @@
 ## 成果展示
 **先要train.py进行训练(我只训练了三万句话，完整数据好像有五十万句)，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
 <br>
-![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/demo.jpg)<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)<br><br>
