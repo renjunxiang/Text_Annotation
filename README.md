@@ -14,7 +14,7 @@
 ## **模块简介**
 ### 模块结构
 结构很简单，方法在Text_Annotation文件夹内，还有一个简单的demo。Text_Annotation文件夹包括：<br>
-* **数据**：小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！<br>
+* **数据**：小黄鸡聊天记录，原文件太大，我只上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！<br>
 * **预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
 * **网络**：model_clf.py，2层双向LSTM+CRF<br>
 * **训练**：train.py<br>
@@ -25,13 +25,13 @@
 <br>
 2.由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，所以效果也就凑合看看啦。<br>
 <br>
-3.编码过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留春词语数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频词。所以我并没有使用texts_to_sequences，而是手动把超过num_words的编码转为num_words。<br>
+3.序列化过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留的编码数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频字。所以我并没有使用texts_to_sequences，而是手动把字频排名超过num_words的字编码为num_words。<br>
 <br>
-4.分词的话相对标注简单一些，只要BMES基本就够了，实体识别的话标注会复杂一些，每个实体类别都有BME。<br>
+4.分词的话标注相对简单一些，只要BMES基本就够了，实体识别的话标注会复杂一些，每个实体类别都额能有BMES，比如人名可能是<PB,PM,PE,PS>。<br>
 <br>
 5.有时间我会尝试一下逐帧softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。
 
 ## 成果展示
-**先要train.py进行训练，annotate.py用于预测(分词)，参考demo.py**<br>
+**先要train.py进行训练，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/demo.jpg)<br><br>
