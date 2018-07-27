@@ -20,7 +20,9 @@
 **训练**：train.py<br>
 **生成**：annotate.py<br>
 <br>
-<div align=center>![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg<br>
+<div align=center>![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg</div>
+<br>
+
 ### 一些说明
 1.不同于LSTM文本生成，CRF要求数据reshape回[batchsize, max_seq_len, num_tags]，所以生成的时候务必保证网络的shape和输入文本的shape一致。<br>
 <br>
