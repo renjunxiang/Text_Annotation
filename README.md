@@ -26,7 +26,7 @@
 ### 一些说明
 1.不同于LSTM文本生成，CRF要求数据reshape回[batchsize, max_seq_len, num_tags]，所以生成的时候务必保证网络的shape和输入文本的shape一致。<br>
 <br>
-2.由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，所以效果也就凑合看看啦。<br>
+2.测试集如果和训练集存在较大的差异，包括专业领域、句法结构等，训练次数越多效果会越差，可以理解为过拟合严重；反之，则训练的越充分，效果越好，可以理解为完全学会了训练集的标注方法。由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，对于法律领域的分词效果惨不忍睹。<br>
 <br>
 3.编码过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留春词语数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频词。所以我并没有使用texts_to_sequences，而是手动把超过num_words的编码转为num_words。<br>
 <br>
@@ -35,6 +35,14 @@
 5.有时间我会尝试一下逐帧softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。
 
 ## 成果展示
-**先要train.py进行训练(我只训练了三万句话，完整数据好像有五十万句)，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
+**先要train.py进行训练，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
 <br>
-![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/demo.jpg)<br><br>
+1.**语料库中闲聊语句的词汇和句法基本都出现了，效果还可以。**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/chat.jpg)<br><br>
+2.**语料库中字基本都出现了，但词汇频率很低，句法结构也相差较大，效果一般。**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/ai.jpg)<br><br>
+3.**语料库中字很多没出现，句法结构基本不同，效果很差，训练次数越多越不准确，会倾向于按照语料库的句法结构去分。**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/law.jpg)<br><br>
+
+
+
