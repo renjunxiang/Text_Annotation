@@ -20,7 +20,7 @@
 **训练**：train.py<br>
 **生成**：annotate.py<br>
 <br>
-<div align=center>![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg</div>
+<div align=center>![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)</div>
 <br>
 
 ### 一些说明
