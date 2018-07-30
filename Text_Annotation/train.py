@@ -23,7 +23,7 @@ def train(x=None,
                         num_tags=num_tags,
                         max_seq_len=max_seq_len)
 
-    saver = tf.train.Saver(tf.global_variables())
+    saver = tf.train.Saver(tf.global_variables(),max_to_keep=20)
     initializer = tf.global_variables_initializer()
     print('start training')
 
@@ -43,5 +43,5 @@ def train(x=None,
                     tensors['loss'],
                     tensors['train_op']
                 ], feed_dict={input_data: x_batch, output_targets: y_batch})
-                print('Epoch: %d, batch: %d, loss loss: %.6f' % (epoch + 1, batch + 1, loss))
+                print('Epoch: %d, batch: %d, loss: %.6f' % (epoch + 1, batch + 1, loss))
             saver.save(sess, './model/', global_step=epoch)

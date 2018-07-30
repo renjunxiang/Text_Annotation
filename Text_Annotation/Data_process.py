@@ -99,8 +99,11 @@ class Data_process():
             text_seq = []
             for word in text:
                 # 超过num_words-1的编码为num_words
-                if word_index[word] < num_words:
-                    text_seq.append(word_index[word])
+                if word in word_index:
+                    if word_index[word] < num_words:
+                        text_seq.append(word_index[word])
+                    else:
+                        text_seq.append(num_words)
                 else:
                     text_seq.append(num_words)
             texts_seq.append(text_seq)
