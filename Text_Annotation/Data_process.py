@@ -5,6 +5,8 @@ import os
 import pickle
 import re
 import jieba
+from . import load_chat
+from .load_docx import load_docx
 
 jieba.setLogLevel('WARN')
 
@@ -20,46 +22,24 @@ class Data_process():
         self.texts_seq = None
         self.maxlen = None
 
-    def load_data(self, len_min=0, len_max=200, num=50000):
+    def load_data(self, file='chat', len_min=0, len_max=200, num=50000):
         '''
-        导入数据，长度控制适用于text2seq的mode='poem'
-        :param file: 数据源，poem诗歌，story小说
+        导入数据
+        :param file: 数据源，chat聊天语料，knowledge政府文件
         :param len_min: 最短长度
         :param len_max: 最长长度
+        :param num: 导入数量
         :return:
         '''
-        identifier = {1: 'S', 2: 'B', 3: 'M', 4: 'E'}
-        with open(DIR + '/data/xiaohuangji50w_nofenci.conv', encoding='utf-8', mode='r') as f:
-            texts = []
-            line = True
-            n = 0
-            while line:
-                line = f.readline()
-                if line != 'E\n':
-                    line_sub = re.sub(pattern='[M\s]', repl='', string=line)
-                    if len(line_sub) > len_min and len(line_sub) < len_max:
-                        texts.append(line_sub)
-                        n += 1
-                        if n >= num:
-                            break
-            f.close()
-
-        target = []
-        for text in texts:
-            text_cut = jieba.lcut(text)
-            text_target = []
-            for word in text_cut:
-                # 单个字标识为S
-                if len(word) == 1:
-                    text_target += [1]
-                # 词语标识为BMS
-                else:
-                    text_target += ([2] + [3] * (len(word) - 2) + [4])
-            target.append(text_target)
-
-        self.len_min = len_min
-        self.len_max = len_max
-        self.identifier = identifier
+        self.file = file
+        if file == 'chat':
+            texts, target = load_chat(len_min, len_max, num)
+            self.len_min = len_min
+            self.len_max = len_max
+        elif file == 'knowledge':
+            texts, target = load_docx()
+        else:
+            raise ValueError('type should be chat or knowledge')
         return texts, target
 
     def pad(self, seq, max_len, pad_value=0):
@@ -83,13 +63,7 @@ class Data_process():
             tokenizer.fit_on_texts(texts)
             word_index = tokenizer.word_index
         num_words = min(num_words, len(word_index.keys()) + 1)
-        # words = sorted(word_index.keys(), key=lambda x: word_index[x])[:num_words - 1]
-        # word_index = {words[i - 1]: i for i in range(1, num_words)}
-        # index_word = {i: words[i - 1] for i in range(1, num_words)}
-        # 超过num_words的定义为U
-        # index_word.update({num_words: 'U'})
-        # self.word_index = word_index
-        # self.index_word = index_word
+
         self.num_words = num_words
         self.word_index = word_index
 
@@ -111,9 +85,9 @@ class Data_process():
         return texts_seq
 
     def data_transform(self, len_min=0, len_max=200,
-                       num_words=5000, num=50000):
+                       num_words=5000, num=50000, file='chat'):
         # 导入数据
-        texts, target = self.load_data(len_min=len_min, len_max=len_max, num=50000)
+        texts, target = self.load_data(len_min=len_min, len_max=len_max, num=num, file=file)
         # 转编码
         texts_seq = self.text2seq(texts=texts, num_words=num_words)
         max_seq_len = np.array([len(i) for i in texts_seq]).max()

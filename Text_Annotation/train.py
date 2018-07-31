@@ -10,7 +10,8 @@ def train(x=None,
           num_tags=5,
           max_seq_len=20,
           batchsize=64,
-          epoch=1):
+          epoch=1,
+          model_path=None):
     input_data = tf.placeholder(tf.int32, [None, None])
     output_targets = tf.placeholder(tf.int32, [None, None])
 
@@ -44,4 +45,4 @@ def train(x=None,
                     tensors['train_op']
                 ], feed_dict={input_data: x_batch, output_targets: y_batch})
                 print('Epoch: %d, batch: %d, loss: %.6f' % (epoch + 1, batch + 1, loss))
-            saver.save(sess, './model/', global_step=epoch)
+            saver.save(sess, model_path, global_step=epoch)

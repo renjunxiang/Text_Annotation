@@ -13,12 +13,12 @@
 
 ## **模块简介**
 ### 模块结构
-结构很简单，方法在Text_Annotation文件夹内，还有一个简单的demo。Text_Annotation文件夹包括：<br>
-**数据**：小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！<br>
-**预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
+结构很简单，方法在Text_Annotation文件夹内，还有两个简单的demo，分别是分词和词性标注。Text_Annotation文件夹包括：<br>
+**数据**：1.小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢；2.若干篇法律法规word文档<br>
+**预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充，导入数据的具体细节在load_chat.py和load_docx.py中<br>
 **网络**：model_clf.py，2层双向LSTM+CRF<br>
 **训练**：train.py<br>
-**生成**：annotate.py<br>
+**生成**：分词annotate_cut.py和词性标注annotate_pos.py<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)
 <br>
@@ -26,7 +26,7 @@
 ### 一些说明
 1.不同于LSTM文本生成，CRF要求数据reshape回[batchsize, max_seq_len, num_tags]，所以生成的时候务必保证网络的shape和输入文本的shape一致。<br>
 <br>
-2.测试集如果和训练集存在较大的差异，包括专业领域、句法结构等，训练次数越多效果会越差，可以理解为过拟合严重；反之，则训练的越充分，效果越好，可以理解为完全学会了训练集的标注方法。由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，对于法律领域的分词效果惨不忍睹。<br>
+2.测试集如果和训练集存在较大的差异，包括专业领域、句法结构等，训练次数越多效果会越差，可以理解为过拟合严重；反之，则训练的越充分，效果越好，可以理解为完全学会了训练集的标注方法。由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，对于法律领域的分词效果惨不忍睹。用jieba对法律文档做了词性标注，训练名词(n)和动词(v)，网上找了一段法律陈述，效果一般。<br>
 <br>
 3.编码过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留春词语数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频词。所以我并没有使用texts_to_sequences，而是手动把排名超过num_words和不在语料库的字编码转为num_words。<br>
 <br>
@@ -43,6 +43,7 @@
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/ai.jpg)<br><br>
 3.**语料库中字很多没出现，句法结构基本不同，效果很差，训练次数越多越不准确，会倾向于按照语料库的句法结构去分。**<br><br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/law.jpg)<br><br>
-
+4.**针对专业领域语料库做名词、动词的训练，效果还可以。**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/pos.jpg)<br><br>
 
 
