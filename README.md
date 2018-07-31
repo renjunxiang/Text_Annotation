@@ -14,11 +14,11 @@
 ## **模块简介**
 ### 模块结构
 结构很简单，方法在Text_Annotation文件夹内，还有两个简单的demo，分别是分词和词性标注。Text_Annotation文件夹包括：<br>
-**数据**：1.小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢；2.若干篇法律法规word文档<br>
-**预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充，导入数据的具体细节在load_chat.py和load_docx.py中<br>
+**数据**：1.小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢；2.若干篇法律法规word文档。导入数据的具体细节在load_chat.py和load_docx.py中<br>
+**预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
 **网络**：model_clf.py，2层双向LSTM+CRF<br>
 **训练**：train.py<br>
-**生成**：分词annotate_cut.py和词性标注annotate_pos.py<br>
+**标注**：annotate_cut.py用于分词，annotate_pos.py词性标注<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)
 <br>
@@ -43,7 +43,7 @@
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/ai.jpg)<br><br>
 3.**语料库中字很多没出现，句法结构基本不同，效果很差，训练次数越多越不准确，会倾向于按照语料库的句法结构去分。**<br><br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/law.jpg)<br><br>
-4.**针对专业领域语料库做名词、动词的训练，效果还可以。**<br><br>
+4.**针对名词、动词的标注，效果还可以。**<br><br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/pos.jpg)<br><br>
 
 
