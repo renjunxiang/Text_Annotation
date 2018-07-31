@@ -10,6 +10,13 @@ def annotate(num_units=128,
              num_tags=5,
              model_path=None,
              data_process_path=None):
+
+    with open(data_process_path, mode='rb') as f:
+        data_process = pickle.load(f)
+
+    num_words = data_process.num_words
+    word_index = data_process.word_index
+
     while True:
         print('\n使用前请确保有模型。输入文本，quit=离开；\n请输入命令：')
         text = input()
@@ -18,11 +25,6 @@ def annotate(num_units=128,
                 print('\n再见！')
                 break
 
-            with open(data_process_path, mode='rb') as f:
-                data_process = pickle.load(f)
-
-            num_words = data_process.num_words
-            word_index = data_process.word_index
             texts_seq = data_process.text2seq(texts=[text],
                                              num_words=num_words,
                                              word_index=word_index)
