@@ -1,4 +1,2 @@
-model_checkpoint_path: "/data/renjunxiang/Text_Annotation/model_pos/-2"
-all_model_checkpoint_paths: "/data/renjunxiang/Text_Annotation/model_pos/-0"
-all_model_checkpoint_paths: "/data/renjunxiang/Text_Annotation/model_pos/-1"
-all_model_checkpoint_paths: "/data/renjunxiang/Text_Annotation/model_pos/-2"
+model_checkpoint_path: "-2"
+all_model_checkpoint_paths: "-2"
