@@ -1,9 +1,11 @@
 import numpy as np
 import tensorflow as tf
-from . import model_clf
+from . import model_clf, model_softmax
+
 
 def train(x=None,
           y=None,
+          model='crf',
           num_words=5000,
           num_units=128,
           num_layers=2,
@@ -15,16 +17,25 @@ def train(x=None,
     input_data = tf.placeholder(tf.int32, [None, None])
     output_targets = tf.placeholder(tf.int32, [None, None])
 
-    tensors = model_clf(input_data=input_data,
-                        output_targets=output_targets,
-                        num_words=num_words,
-                        num_units=num_units,
-                        num_layers=num_layers,
-                        batchsize=batchsize,
-                        num_tags=num_tags,
-                        max_seq_len=max_seq_len)
+    if model == 'crf':
+        tensors = model_clf(input_data=input_data,
+                            output_targets=output_targets,
+                            num_words=num_words,
+                            num_units=num_units,
+                            num_layers=num_layers,
+                            batchsize=batchsize,
+                            num_tags=num_tags,
+                            max_seq_len=max_seq_len)
+    elif model == 'softmax':
+        tensors = model_softmax(input_data=input_data,
+                                output_targets=output_targets,
+                                num_words=num_words,
+                                num_units=num_units,
+                                num_layers=num_layers,
+                                batchsize=batchsize,
+                                num_tags=num_tags)
 
-    saver = tf.train.Saver(tf.global_variables(),max_to_keep=20)
+    saver = tf.train.Saver(tf.global_variables(), max_to_keep=20)
     initializer = tf.global_variables_initializer()
     print('start training')
 

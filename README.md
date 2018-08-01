@@ -37,11 +37,13 @@
 <br>
 4.分词的话相对标注简单一些，只要BMES基本就够了，实体识别的话标注会复杂一些，每个实体类别的都有BME，例如名词N的标注为NB/NM/NE/NS。<br>
 <br>
-5.有时间我会尝试一下逐帧softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。
+~~5.有时间我会尝试一下逐帧Softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。~~<br>
+抽空完成了用逐帧Softmax做标注，分词倾向于单个字，词性标注会出现嵌套的情况，效果的确要比CRF差一些。
 
 ## 结果展示
 **先要train.py进行训练，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
 <br>
+### CRF的效果
 1.**语料库中闲聊语句的词汇和句法基本都出现了，效果还可以。**<br><br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/chat.jpg)<br><br>
 2.**语料库中字基本都出现了，但词汇频率很低，句法结构也相差较大，效果一般。**<br><br>
@@ -51,4 +53,9 @@
 4.**针对名词、动词的标注，效果还可以。**<br><br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/pos.jpg)<br><br>
 
+### Softmax的效果
+1.**分词倾向于逐个字切分，勉强能看。**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/ai_softmax.jpg)<br><br>
+2.**针对名词、动词的标注，效果低于CRF，勉强能看。**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/pos_softmax.jpg)<br><br>
 
