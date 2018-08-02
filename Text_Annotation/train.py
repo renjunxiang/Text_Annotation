@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from . import model_clf, model_softmax
+from . import model_crf, model_softmax
 
 
 def train(x=None,
@@ -18,7 +18,7 @@ def train(x=None,
     output_targets = tf.placeholder(tf.int32, [None, None])
 
     if model == 'crf':
-        tensors = model_clf(input_data=input_data,
+        tensors = model_crf(input_data=input_data,
                             output_targets=output_targets,
                             num_words=num_words,
                             num_units=num_units,

@@ -1,5 +1,5 @@
 import tensorflow as tf
-from . import model_clf, model_softmax
+from . import model_crf, model_softmax
 import pickle
 import os
 
@@ -37,7 +37,7 @@ def annotate_cut(num_units=128,
 
             # 导入计算图
             if model == 'crf':
-                tensors = model_clf(input_data=input_data,
+                tensors = model_crf(input_data=input_data,
                                     output_targets=output_targets,
                                     num_words=num_words,
                                     num_units=num_units,
