@@ -19,7 +19,7 @@
 <br>
 **预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
 <br>
-**网络**：model_clf.py，2层双向LSTM+CRF<br>
+**网络**：model_crf.py，2层双向LSTM+CRF<br>
 <br>
 **训练**：train.py<br>
 <br>
