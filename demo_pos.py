@@ -4,7 +4,7 @@ import os
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 params = {
-    'model': 'softmax',
+    'model': 'crf',
     'num_units': 128,
     'num_layers': 2,
     'num_tags': 10,

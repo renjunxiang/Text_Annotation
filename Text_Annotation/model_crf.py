@@ -81,10 +81,12 @@ def model_crf(input_data=None,
 
         train_op = tf.train.AdamOptimizer(learning_rate=0.01).minimize(loss)
         tensors['train_op'] = train_op
+        tensors['output_fb'] = output_fb
         tensors['transition_params'] = transition_params
         tensors['loss'] = loss
         tensors['prediction'] = decode_tags
     else:
+        tensors['output_fb'] = output_fb
         tensors['transition_params'] = transition_params
         tensors['prediction'] = decode_tags
 
