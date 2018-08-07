@@ -3,7 +3,7 @@ import pickle
 import os
 
 DIR = os.path.dirname(os.path.abspath(__file__))
-DIR = '.'
+
 params = {
     'model': 'crf',
     'num_units': 128,

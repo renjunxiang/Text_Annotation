@@ -1,12 +1,14 @@
 import tensorflow as tf
-from . import model_crf, model_softmax
+from ..net import model_crf, model_softmax
+from . import locate, seq2text
 import pickle
 import os
+from jieba.posseg import lcut
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = '3'
 
 
-def annotate_cut(num_units=128,
+def annotate_pos(num_units=128,
                  num_layers=2,
                  num_tags=5,
                  model='crf',
@@ -64,16 +66,29 @@ def annotate_cut(num_units=128,
             checkpoint = tf.train.latest_checkpoint(model_path)
             saver.restore(sess, checkpoint)
             y_predict = sess.run(tensors['prediction'], feed_dict={input_data: texts_seq})[0]
-            y = ''
-            for n, word in enumerate(text):
-                if y_predict[n] != 0:
-                    if y_predict[n] in [1, 4]:
-                        y += (word + '/')
-                    else:
-                        y += word
+
+            # 逐个字标注，<名词>，[动词]
+            regulation = [['n', [1]],
+                          ['n', [2, 3, 4]],
+                          ['v', [5]],
+                          ['v', [6, 7, 8]],
+                          ['U', [9]]]
+            location = locate(regulation, y_predict)
+            y = seq2text(text, location)
+
+            labels = ''
+            for i in lcut(text):
+                if list(i)[1] in ['n', 'v']:
+                    labels += ' [' + list(i)[0] + ',' + list(i)[1] + '] '
+                else:
+                    labels += list(i)[0]
+
             print('\n分析结果：\n',
                   # y_predict, '\n',
-                  y)
+                  y,
+                  '\n\n正确结果：\n',
+                  labels
+                  )
 
         except Exception as e:
             print(e)

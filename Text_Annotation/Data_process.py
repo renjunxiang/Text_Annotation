@@ -5,8 +5,7 @@ import os
 import pickle
 import re
 import jieba
-from . import load_chat
-from .load_docx import load_docx
+from .data import load_chat,load_docx
 
 jieba.setLogLevel('WARN')
 

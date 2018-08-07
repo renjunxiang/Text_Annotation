@@ -11,7 +11,7 @@ identifier = {1: 'S', 2: 'B', 3: 'M', 4: 'E'}
 
 
 def load_chat(len_min=0, len_max=200, num=50000):
-    with open(DIR + '/data/xiaohuangji50w_nofenci.conv', encoding='utf-8', mode='r') as f:
+    with open(DIR + '/xiaohuangji50w_nofenci.conv', encoding='utf-8', mode='r') as f:
         texts = []
         line = True
         n = 0

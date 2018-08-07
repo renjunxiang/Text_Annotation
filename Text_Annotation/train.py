@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from . import model_crf, model_softmax
+from .net import model_crf, model_softmax
 
 
 def train(x=None,

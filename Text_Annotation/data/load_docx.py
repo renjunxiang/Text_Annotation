@@ -60,7 +60,7 @@ def load_docx():
     texts, targets = [], []
     folder_names = ['材料清单', '法律法规', '医疗器械']
     for folder_name in folder_names:
-        folder_path = DIR + '/data/%s' % (folder_name)
+        folder_path = DIR + '/%s' % (folder_name)
         file_paths = os.listdir(folder_path)
         for file_path in file_paths:
             texts_one, targets_one = docx2data(file_path=folder_path + '/' + file_path)
