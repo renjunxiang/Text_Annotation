@@ -43,8 +43,8 @@ def creat_relation(sentence_vector,
 
     return train_x, train_y
 
-
-y_predict, output_fb = annotate(text=texts,
-                                data_process_path=DIR + '/%s/model_pos/data_process.pkl' % (params['model']),
-                                model_path=DIR + '/%s/model_pos/' % (params['model']),
-                                **params)
+for text in texts:
+    y_predict, output_fb = annotate(text=text,
+                                    data_process_path=DIR + '/%s/model_pos/data_process.pkl' % (params['model']),
+                                    model_path=DIR + '/%s/model_pos/' % (params['model']),
+                                    **params)

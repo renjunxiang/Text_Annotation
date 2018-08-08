@@ -1,6 +1,6 @@
 import tensorflow as tf
 from ..net import model_crf, model_softmax
-from . import locate, seq2text
+from ..annotate import locate, seq2text
 import pickle
 import os
 from jieba.posseg import lcut
