@@ -11,7 +11,7 @@ def relation_extraction(input_embedding=None,
                         num_units=128,
                         batchsize=64,
                         num_tags=10):
-    '''
+    """
 
     :param input_embedding: 文本embedding后的向量序列
     :param input_indexes: 实体位置索引
@@ -20,7 +20,7 @@ def relation_extraction(input_embedding=None,
     :param batchsize:
     :param num_tags: 关系类别种类
     :return:
-    '''
+    """
     tensors={}
 
     with tf.variable_scope('relation'):

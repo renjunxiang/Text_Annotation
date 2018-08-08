@@ -1,3 +1,2 @@
-from .location import locate, seq2text
-from .annotate_cut import annotate_cut
-from .annotate_pos import annotate_pos
+from .location import locate, pair_vector, seq2text
+from .annotate import annotate

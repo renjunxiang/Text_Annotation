@@ -15,11 +15,11 @@ identifier = {1: 'n_S', 2: 'n_B', 3: 'n_M', 4: 'n_E',
 
 
 def docx2data(file_path=None):
-    '''
+    """
 
     :param file_path: 文件路径
     :return:
-    '''
+    """
     document = docx.Document(file_path)
 
     texts, targets = [], []

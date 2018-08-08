@@ -9,7 +9,7 @@ def model_crf(input_data=None,
               batchsize=64,
               num_tags=10,
               max_seq_len=40):
-    '''
+    """
 
     :param input_data:
     :param output_targets:
@@ -20,7 +20,7 @@ def model_crf(input_data=None,
     :param num_tags:标签数量
     :param max_seq_len: 句子长度
     :return:
-    '''
+    """
     tensors = {}
 
     # 一个batch的句子长度序列

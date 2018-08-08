@@ -7,7 +7,7 @@ def model_softmax(input_data=None,
                   num_layers=2,
                   num_tags=5,
                   batchsize=1):
-    '''
+    """
 
     :param input_data:
     :param output_targets:
@@ -17,7 +17,7 @@ def model_softmax(input_data=None,
     :param num_tags:标签数量
     :param batchsize: 1代表生成，大于1代表训练
     :return:
-    '''
+    """
     tensors = {}
 
     with tf.name_scope('embedding'):

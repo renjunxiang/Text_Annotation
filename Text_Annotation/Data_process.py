@@ -5,7 +5,7 @@ import os
 import pickle
 import re
 import jieba
-from .data import load_chat,load_docx
+from .data import load_chat, load_docx
 
 jieba.setLogLevel('WARN')
 
@@ -14,22 +14,23 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Data_process():
     def __init__(self):
+        self.file = None
         self.texts = None
         self.len_max = None
         self.word_index = None
         self.num_words = None
         self.texts_seq = None
-        self.maxlen = None
+        self.max_seq_len = None
 
     def load_data(self, file='chat', len_min=0, len_max=200, num=50000):
-        '''
+        """
         导入数据
         :param file: 数据源，chat聊天语料，knowledge政府文件
         :param len_min: 最短长度
         :param len_max: 最长长度
         :param num: 导入数量
         :return:
-        '''
+        """
         self.file = file
         if file == 'chat':
             texts, target = load_chat(len_min, len_max, num)
@@ -49,13 +50,13 @@ class Data_process():
         return seq_pad
 
     def text2seq(self, texts=None, num_words=5000, word_index=None):
-        '''
+        """
         文本转编码
         :param mode: 文本reshape方式，length以长度重新分割，sample按样本
         :param num_words: 保留词语数量
         :param maxlen: 保留文本长度
         :return:
-        '''
+        """
         if word_index is None:
             tokenizer = Tokenizer(num_words=num_words, char_level=True)
             # 训练词典,实际保留的是num_words-1个词,还有一个是0
