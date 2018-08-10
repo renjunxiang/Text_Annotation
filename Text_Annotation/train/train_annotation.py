@@ -1,19 +1,19 @@
 import numpy as np
 import tensorflow as tf
-from .net import model_crf, model_softmax
+from ..net import model_crf, model_softmax
 
 
-def train(x=None,
-          y=None,
-          model='crf',
-          num_words=5000,
-          num_units=128,
-          num_layers=2,
-          num_tags=5,
-          max_seq_len=20,
-          batchsize=64,
-          epoch=1,
-          model_path=None):
+def train_annotation(x=None,
+                     y=None,
+                     model='crf',
+                     num_words=5000,
+                     num_units=128,
+                     num_layers=2,
+                     num_tags=5,
+                     max_seq_len=20,
+                     batchsize=64,
+                     epoch=1,
+                     model_path=None):
     input_data = tf.placeholder(tf.int32, [None, None])
     output_targets = tf.placeholder(tf.int32, [None, None])
 

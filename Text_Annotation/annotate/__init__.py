@@ -1,2 +1,2 @@
 from .location import locate, pair_vector, seq2text
-from .annotate import annotate
+from .annotate import annotate, find_relation

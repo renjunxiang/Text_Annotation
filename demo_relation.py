@@ -1,9 +1,11 @@
-from Text_Annotation import Data_process, train
-from Text_Annotation.annotate import annotate
-import pickle
+from Text_Annotation.annotate import annotate, find_relation
+from Text_Annotation.train import train_relation
+from keras.models import load_model
+import numpy as np
 import os
 
 DIR = os.path.dirname(os.path.abspath(__file__))
+
 params = {
     'model': 'crf',
     'num_units': 128,
@@ -11,26 +13,48 @@ params = {
     'num_tags': 10,
 }
 
-data_process = Data_process()
-texts_seq, target = data_process.data_transform(len_min=0,
-                                                len_max=200,
-                                                num_words=5000,
-                                                num=100000,
-                                                file='knowledge')
+# train_x = np.load(DIR + '/data/train_x.npy')
+# train_y = np.load(DIR + '/data/train_y_s.npy')
+#
+# # model=train_relation(x=train_x,y=train_y,method='SVM',model_path=DIR+'/model/relation/SVM.model')
+# model = train_relation(x=train_x, y=train_y, num_tag=2,
+#                        batchsize=64, epoch=1,
+#                        method='DL', model_path=DIR + '/model/relation/DL.h5')
 
-with open(DIR + '/%s/model_pos/data_process.pkl' % (params['model']), mode='wb') as f:
-    pickle.dump(data_process, f)
 
-train(x=texts_seq,
-      y=target,
-      num_words=data_process.num_words,
-      batchsize=64,
-      epoch=1,
-      max_seq_len=data_process.max_seq_len,
-      model_path=DIR + '/%s/model_pos/' % (params['model']),
-      **params)
+method = 'DL'
+model = load_model(DIR + '/model/relation/DL.h5')
+m=model.predict(np.ones([1,512]))
 
-annotation = annotate(text='1',
-                      data_process_path=DIR + '/%s/model_pos/data_process.pkl' % (params['model']),
-                      model_path=DIR + '/%s/model_pos/' % (params['model']),
-                      **params)
+regulations = [['n', [1]],
+               ['n', [2, 3, 4]],
+               ['v', [5]],
+               ['v', [6, 7, 8]],
+               ['U', [9]]]
+regular = [['v', 'n'], ['n', 'v']]
+
+while True:
+    print('\n使用前请确保有模型。输入文本，quit=离开；\n请输入命令：')
+    text = input()
+
+    if text == 'quit':
+        print('\n再见！')
+        break
+
+    # text='医疗机构变更单位名称、法定代表人或负责人'
+    y_predict, output_fb = annotate(text=text,
+                                    data_process_path=DIR + '/model/%s/model_pos/data_process.pkl' % (params['model']),
+                                    model_path=DIR + '/model/%s/model_pos/' % (params['model']),
+                                    train=False,
+                                    **params)
+
+    result = find_relation(text=text,
+                           sentence_vector=output_fb[0],
+                           regulations=regulations,
+                           regular=regular,
+                           annotation=y_predict[0],
+                           model=model,
+                           method='DL',
+                           tags=['null', 'nv'])
+    print('\n分析结果：\n',
+          result)

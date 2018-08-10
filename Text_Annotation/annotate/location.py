@@ -79,19 +79,22 @@ def pair_vector(sentence_vector, locations, regular=None):
         [['v', 'n'], ['n', 'v'], ['v', 'v'], ['n', 'n']]
     :return:
     """
-    entity_pairs_raw = itertools.combinations(locations, 2)
+    entity_pairs_raw = list(itertools.combinations(locations, 2))
     vector_pairs = []
-    for entity_pair in entity_pairs_raw:
+    entity_pairs = []
+    for entity_pair_raw in entity_pairs_raw:
         if regular:
             # 剔除不符合配对规则的组合
-            if [entity_pair[0][1], entity_pair[1][1]] in regular:
-                vector_pair = cal_pair_vec(sentence_vector, entity_pair[0][0], entity_pair[1][0])
-                vector_pairs.append([vector_pair, [entity_pair[0][1], entity_pair[1][1]]])
+            if [entity_pair_raw[0][1], entity_pair_raw[1][1]] in regular:
+                vector_pair = cal_pair_vec(sentence_vector, entity_pair_raw[0][0], entity_pair_raw[1][0])
+                entity_pairs.append(entity_pair_raw)
+                vector_pairs.append([vector_pair, [entity_pair_raw[0][1], entity_pair_raw[1][1]]])
         else:
-            vector_pair = cal_pair_vec(sentence_vector, entity_pair[0][0], entity_pair[1][0])
-            vector_pairs.append([vector_pair, [entity_pair[0][1], entity_pair[1][1]]])
+            vector_pair = cal_pair_vec(sentence_vector, entity_pair_raw[0][0], entity_pair_raw[1][0])
+            entity_pairs.append(entity_pair_raw)
+            vector_pairs.append([vector_pair, [entity_pair_raw[0][1], entity_pair_raw[1][1]]])
 
-    return vector_pairs
+    return entity_pairs, vector_pairs
 
 
 def seq2text(text=None, location=None):
@@ -134,9 +137,11 @@ if __name__ == '__main__':
 
     _locations = locate(_regulation, _annotation)
     print('locations:', _locations)
-    # [[[0, 1], 'v'], [[2, 3, 4, 5], 'n'], [[12, 13, 14, 15], 'n']]
+    # [[[0, 1], 'v'], [[2, 3, 4, 5], 'n'], [[6], 'U'], [[7], 'U'], [[8, 9], 'v']]
 
-    _vector_pairs = pair_vector(_s_vec, _locations, _regular)
+    _entity_pairs, _vector_pairs = pair_vector(_s_vec, _locations, _regular)
+    print('entity_pairs:', _entity_pairs)
+    # [([[0, 1], 'v'], [[2, 3, 4, 5], 'n']), ([[2, 3, 4, 5], 'n'], [[8, 9], 'v'])]
     print('vector_pairs:', _vector_pairs)
     # [[[7, 7, 3, 3], ['v', 'n']], [[3, 3, 7, 7], ['n', 'v']]]
 

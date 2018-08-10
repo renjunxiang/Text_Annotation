@@ -15,15 +15,24 @@
 ### 模块结构
 结构很简单，方法在Text_Annotation文件夹内，还有两个简单的demo，分别是分词和词性标注。Text_Annotation文件夹包括：<br>
 <br>
-**数据**：1.小黄鸡聊天记录，我自己上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢；2.若干篇法律法规word文档。导入数据的具体细节在load_chat.py和load_docx.py中<br>
+**数据**：data文件夹中<br>
+小黄鸡聊天记录(导入数据load_chat.py，我上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！)<br>
+若干篇法律法规word文档(导入数据load_docx.py)<br>
+创建实体关系(假设只有相邻的名词和动词存在关系，creat_relation.py)<br>
 <br>
 **预处理**：Data_process.py是个方法，用于载入数据、分词、编码、填充<br>
 <br>
-**网络**：model_crf.py，2层双向LSTM+CRF<br>
+**网络**：net文件夹<br>
+双向LSTM+CRF，model_crf.py<br>
+双向LSTM+Softmax，model_Softmax.py<br>
 <br>
 **训练**：train.py<br>
 <br>
-**标注**：annotate_cut.py用于分词，annotate_pos.py词性标注<br>
+**标注**：annotate文件夹，annotate_cut.py用于分词，annotate_pos.py词性标注<br>
+<br>
+**范例**：<br>
+demo文件夹，annotate_cut.py用于分词，annotate_pos.py词性标注<br>
+demo_cut.py分词，demo_pos.py词性标注，demo_creat_relation.py创建实体对关系数据，demo_creat_relation_mp.py多进程创建实体对关系数据(会报错)<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)
 <br>
@@ -39,6 +48,8 @@
 <br>
 ~~5.有时间我会尝试一下逐帧Softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。~~<br>
 抽空完成了用逐帧Softmax做标注，分词倾向于单个字，词性标注会出现嵌套的情况，效果的确要比CRF差一些。
+<br>
+6.创建实体对标注数据的时候，由于是先对每一条数据做实体识别，再做实体配对，速度有点慢。本来想用多进程的(demo_creat_relation_mp.py)，但是会报Failed to create session这个错误，不知道什么原因。实际应用中预测多条的时候，可能要考虑这个问题<br>
 
 ## 结果展示
 **先要train.py进行训练，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>

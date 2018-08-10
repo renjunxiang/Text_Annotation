@@ -1,48 +1,47 @@
-import tensorflow as tf
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from keras.models import Model
+from keras.layers import Input, Dense, Activation, BatchNormalization
 
-input_embedding = tf.placeholder(shape=[None, 2, 4], dtype=tf.float32)
-input_indexes = tf.placeholder(shape=[None, 2], dtype=tf.float32)
-output_targets = tf.placeholder(shape=[None, 5], dtype=tf.float32)
+
+def SklearnClf(method='SVM', **param):
+    '''
+    Good performance in small dataset
+    :param method: sklearn model name
+    :param param: sklearn model name param,such as "C","kernel"...
+    :return: sklearn model
+    '''
+    if method == 'SVM':
+        model = SVC(probability=True,
+                    **param)
+    elif method == 'Logistic':
+        model = LogisticRegression(**param)
+
+    return model
 
 
-def relation_extraction(input_embedding=None,
-                        input_indexes=None,
-                        output_targets=None,
-                        num_units=128,
-                        batchsize=64,
-                        num_tags=10):
-    """
+def DL(input_shape, output_shape):
+    '''
+    Simple net.
 
-    :param input_embedding: 文本embedding后的向量序列
-    :param input_indexes: 实体位置索引
-    :param output_targets: 关系类别
-    :param num_units: embedding维度
-    :param batchsize:
-    :param num_tags: 关系类别种类
-    :return:
-    """
-    tensors={}
+    :param input_shape: Shape of the input data
+    :param vec_size:Dimension of the dense embedding
+    :param output_shape:Target shape,target should be int
+    :return:keras model
+    '''
+    data_input = Input(shape=input_shape)
+    x = Dense(500)(data_input)
+    x = BatchNormalization()(x)
+    x = Activation(activation='relu')(x)
+    x = Dense(output_shape)(x)
+    data_output = Activation(activation='softmax')(x)
 
-    with tf.variable_scope('relation'):
-        input_indexes = tf.expand_dims(input=input_indexes, dim=2)
-        input_indexes = tf.concat([input_indexes] * (num_units * 2), axis=2)
-        entity_pair = tf.multiply(input_embedding, input_indexes)
-        entity_pair = tf.reduce_mean(entity_pair, axis=1)
+    model = Model(inputs=data_input, outputs=data_output)
+    model.compile(loss='sparse_categorical_crossentropy',
+                  optimizer='adam',
+                  metrics=['accuracy'])
 
-    with tf.variable_scope('classify'):
-        dense = tf.layers.dense(inputs=entity_pair, units=500, activation=tf.nn.relu)
-        logits = tf.layers.dense(inputs=dense, units=num_tags)
-        loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=output_targets,
-                                                              logits=logits)
-        loss = tf.reduce_mean(loss)
+    return model
 
-    if batchsize > 1:
-        train_op = tf.train.AdamOptimizer(learning_rate=0.01).minimize(loss)
-        tensors['train_op'] = train_op
-        tensors['loss'] = loss
-        tensors['prediction'] = logits
-    else:
-        tensors['prediction'] = logits
-        tensors['loss'] = loss
 
-    return tensors
+

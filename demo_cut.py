@@ -1,4 +1,6 @@
-from Text_Annotation import Data_process, train, annotate_cut
+from Text_Annotation import Data_process
+from Text_Annotation.train import train_annotation
+from Text_Annotation.demo import annotate_cut
 import pickle
 import os
 
@@ -18,18 +20,18 @@ texts_seq, target = data_process.data_transform(len_min=0,
                                                 num=300000,
                                                 file='chat')
 
-with open(DIR + '/%s/model_cut/data_process.pkl' % (params['model']), mode='wb') as f:
+with open(DIR + '/model/%s/model_cut/data_process.pkl' % (params['model']), mode='wb') as f:
     pickle.dump(data_process, f)
 
-train(x=texts_seq,
-      y=target,
-      num_words=data_process.num_words,
-      batchsize=64,
-      epoch=1,
-      max_seq_len=data_process.max_seq_len,
-      model_path=DIR + '/%s/model_cut/' % (params['model']),
-      **params)
+train_annotation(x=texts_seq,
+                 y=target,
+                 num_words=data_process.num_words,
+                 batchsize=64,
+                 epoch=1,
+                 max_seq_len=data_process.max_seq_len,
+                 model_path=DIR + '/model/%s/model_cut/' % (params['model']),
+                 **params)
 
-annotate_cut(data_process_path=DIR + '/%s/model_cut/data_process.pkl' % (params['model']),
-             model_path=DIR + '/%s/model_cut/' % (params['model']),
+annotate_cut(data_process_path=DIR + '/model/%s/model_cut/data_process.pkl' % (params['model']),
+             model_path=DIR + '/model/%s/model_cut/' % (params['model']),
              **params)
