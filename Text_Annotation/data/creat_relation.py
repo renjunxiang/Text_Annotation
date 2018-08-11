@@ -28,11 +28,14 @@ def creat_relation(sentence_vector,
     train_y = []
     for num, vector_pair in enumerate(vector_pairs):
         train_x.append(vector_pair[0])
-        # 动名词是否相邻,相邻标记为1,否则为0
+        # 动名词是否相邻,主谓标记为1,动宾标记为2,,否则为0
         if entity_pairs[num][1][0][0] - entity_pairs[num][0][0][-1] == 1:
-            train_y.append([0.0, 1.0])
+            if [entity_pairs[num][0][1], entity_pairs[num][1][1]] == ['n', 'v']:
+                train_y.append([1])
+            elif [entity_pairs[num][0][1], entity_pairs[num][1][1]] == ['v', 'n']:
+                train_y.append([2])
         else:
-            train_y.append([1.0, 0.0])
+            train_y.append([0])
 
     return train_x, train_y
 

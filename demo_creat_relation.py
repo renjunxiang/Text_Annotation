@@ -26,8 +26,8 @@ regulations = [['n', [1]],
 train_x, train_y = [], []
 for num, text in enumerate(texts):
     output_fb = annotate(text=text,
-                         data_process_path=DIR + '/%s/model_pos/data_process.pkl' % (params['model']),
-                         model_path=DIR + '/%s/model_pos/' % (params['model']),
+                         data_process_path=DIR + '/model/%s/model_pos/data_process.pkl' % (params['model']),
+                         model_path=DIR + '/model/%s/model_pos/' % (params['model']),
                          train=True,
                          **params)
 
@@ -40,9 +40,3 @@ for num, text in enumerate(texts):
 
 np.save(DIR + '/data/train_x.npy', train_x)
 np.save(DIR + '/data/train_y.npy', train_y)
-
-import numpy as np
-train_y=np.load('./data/train_y.npy')
-train_y=np.argmax(train_y,axis=1)
-np.save('./data/train_y_s.npy', train_y)
-train_y.mean()

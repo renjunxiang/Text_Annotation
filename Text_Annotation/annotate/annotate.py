@@ -90,11 +90,71 @@ def find_relation(text,
     :param annotation:标注结果
     :param model:模型
     :param method:模型名称,SVM,Logistic,DL
-    :param tags:关系标签,list,['nv','null']
+    :param tags:关系标签,list,['null','nv']
     :return:
+
+    result = {
+    'text': '我喜欢吃苹果',
+    'entity': [
+        {
+            'text': '我',
+            'location': [0],
+            'type': 'n'
+        },
+        {
+            'text': '喜欢',
+            'location': [1, 2],
+            'type': 'v'
+        },
+        {
+            'text': '吃',
+            'location': [3],
+            'type': 'v'
+        },
+        {
+            'text': '苹果',
+            'location': [4, 5],
+            'type': 'n'
+        }
+    ],
+    'relation': [
+        {
+            'entity1': {
+                'text': '我',
+                'location': [0],
+                'type': 'n'
+            },
+            'entity2': {
+                'text': '喜欢',
+                'location': [1, 2],
+                'type': 'v'
+            },
+            'relation': {
+                'score': 0.8,
+                'classify': '主谓'
+            }
+        },
+        {
+            'entity1': {
+                'text': '吃',
+                'location': [3],
+                'type': 'v'
+            },
+            'entity2': {
+                'text': '苹果',
+                'location': [4, 5],
+                'type': 'n'
+            },
+            'relation': {
+                'score': 0.9,
+                'classify': '动宾'
+            }
+        }
+    ]
+}
     """
     # results = OrderedDict()
-    results={}
+    results = {}
     results['text'] = text
     results['entities'] = []
     results['relations'] = []
@@ -112,7 +172,7 @@ def find_relation(text,
 
     # 关系抽取
     entity_pairs, vector_pairs = pair_vector(sentence_vector, locations, regular)
-    test_x = []
+
     for num, vector_pair in enumerate(vector_pairs):
         result_relation = {
             'entity1': {'text': '我', 'location': [0], 'type': 'n'},
@@ -129,17 +189,18 @@ def find_relation(text,
         result_relation['entity2']['location'] = entity_pair[1][0]
         result_relation['entity2']['type'] = entity_pair[1][1]
 
+        # keras直接输出概率,sklearn需要指定predict_prob
         if method == 'DL':
             relation = model.predict(np.array([vector_pair[0]]))[0]
         else:
-            relation = model.predict_prob(np.array([vector_pair]))[0]
+            relation = model.predict_prob(np.array([vector_pair[0]]))[0]
 
-        relation_index=np.argmax(relation)
+        relation_index = np.argmax(relation)
         result_relation['relation']['score'] = relation[relation_index]
         result_relation['relation']['classify'] = tags[relation_index]
 
-        if relation_index !=0:
+        # 只保留有意义的关系
+        if relation_index != 0:
             results['relations'].append(result_relation)
 
     return results
-

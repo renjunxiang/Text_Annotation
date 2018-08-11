@@ -13,7 +13,7 @@
 
 ## **模块简介**
 ### 模块结构
-结构很简单，方法在Text_Annotation文件夹内，还有两个简单的demo，分别是分词和词性标注。Text_Annotation文件夹包括：<br>
+结构很简单，方法在Text_Annotation文件夹内，还有三个简单的demo，分别是分词、词性标注和关系抽取。Text_Annotation文件夹包括：<br>
 <br>
 **数据**：data文件夹中<br>
 小黄鸡聊天记录(导入数据load_chat.py，我上传了部分，完整版来源<https://github.com/fateleak/dgk_lost_conv>，在此表示感谢！)<br>
@@ -25,14 +25,22 @@
 **网络**：net文件夹<br>
 双向LSTM+CRF，model_crf.py<br>
 双向LSTM+Softmax，model_Softmax.py<br>
+关系分类器SVM/Logostic/Dense，model_relation.py<br>
 <br>
-**训练**：train.py<br>
+**训练**：train文件夹<br>
+实体识别，train_annotation.py<br>
+关系抽取，train_relation.py<br>
 <br>
-**标注**：annotate文件夹，annotate_cut.py用于分词，annotate_pos.py词性标注<br>
+**标注**：annotate文件夹<br>
+location.py，实体定位、筛选、配对<br>
+annotate.py，句向量、实体识别<br>
 <br>
-**范例**：<br>
-demo文件夹，annotate_cut.py用于分词，annotate_pos.py词性标注<br>
-demo_cut.py分词，demo_pos.py词性标注，demo_creat_relation.py创建实体对关系数据，demo_creat_relation_mp.py多进程创建实体对关系数据(会报错)<br>
+**范例**：demo文件夹<br>
+annotate_cut.py，用于分词<br>
+annotate_pos.py，词性标注<br>
+demo_creat_relation.py创建实体对关系数据<br>
+demo_creat_relation_mp.py多进程创建实体对关系数据(进程多了会报sess不能创建的错误)<br>
+data文件夹，存放自己生成的用于训练关系抽取的数据<br>
 <br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/theory.jpg)
 <br>
@@ -40,16 +48,14 @@ demo_cut.py分词，demo_pos.py词性标注，demo_creat_relation.py创建实体
 ### 一些说明
 1.不同于LSTM文本生成，CRF要求数据reshape回[batchsize, max_seq_len, num_tags]，所以生成的时候务必保证网络的shape和输入文本的shape一致。<br>
 <br>
-2.测试集如果和训练集存在较大的差异，包括专业领域、句法结构等，训练次数越多效果会越差，可以理解为过拟合严重；反之，则训练的越充分，效果越好，可以理解为完全学会了训练集的标注方法。由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，对于法律领域的分词效果惨不忍睹。用jieba对法律文档做了词性标注，训练名词(n)和动词(v)，网上找了一段法律陈述，效果一般。<br>
+2.分词的话相对标注简单一些，只要BMES基本就够了，实体识别的话标注会复杂一些，每个实体类别的都有BME，例如名词N的标注为NB/NM/NE/NS。测试集如果和训练集存在较大的差异，包括专业领域、句法结构等，训练次数越多效果会越差，可以理解为过拟合严重；反之，则训练的越充分，效果越好，可以理解为完全学会了训练集的标注方法。由于没有标签数据，我用jieba对小黄鸡语料库先分词，转成BMES标签后训练，对于法律领域的分词效果惨不忍睹。用jieba对法律文档做了词性标注，训练名词(n)和动词(v)，网上找了一段法律陈述，效果一般。<br>
 <br>
 3.编码过程使用了keras的Tokenizer，他的num_words是包含0的，也就是保留春词语数量实际是num_words-1。不同于分类和生成，标注要注意数据不能在Tokenizer的时候删掉低频词。所以我并没有使用texts_to_sequences，而是手动把排名超过num_words和不在语料库的字编码转为num_words。<br>
 <br>
-4.分词的话相对标注简单一些，只要BMES基本就够了，实体识别的话标注会复杂一些，每个实体类别的都有BME，例如名词N的标注为NB/NM/NE/NS。我尝试了19篇word文档用jieba标注名词和动词，再去对新的文本做标注，效果一般，说明对样本的依赖还是很严重的，意味着专业领域的实体识别对数据的要求非常高。<br>
-<br>
-~~5.有时间我会尝试一下逐帧Softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。~~<br>
+~~4.有时间我会尝试一下逐帧Softmax的效果，理论上每个词的输出是结合了上下文语义，而且从唐诗生成的效果看是完全可以学到上下文的。~~<br>
 抽空完成了用逐帧Softmax做标注，分词倾向于单个字，词性标注会出现嵌套的情况，效果的确要比CRF差一些。
 <br>
-6.创建实体对标注数据的时候，由于是先对每一条数据做实体识别，再做实体配对，速度有点慢。本来想用多进程的(demo_creat_relation_mp.py)，但是会报Failed to create session这个错误，不知道什么原因。实际应用中预测多条的时候，可能要考虑这个问题<br>
+5.创建实体对标注数据的时候，由于是先对每一条数据做实体识别，再做实体配对，速度有点慢。本来想用多进程的(demo_creat_relation_mp.py)，但是会报Failed to create session这个错误，不知道什么原因。实际应用中预测多条的时候，可能要进一步优化。另外keras和tensorflow同时使用，必须先运行一下keras的模型，否则keras无法创建计算图，见demo_relation.py<br>
 
 ## 结果展示
 **先要train.py进行训练，这时会保存网络参数和预处理参数，annotate.py会导入这些参数用于预测(分词)，参考demo.py**<br>
@@ -63,6 +69,8 @@ demo_cut.py分词，demo_pos.py词性标注，demo_creat_relation.py创建实体
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/law.jpg)<br><br>
 4.**针对名词、动词的标注，效果还可以。**<br><br>
 ![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/pos.jpg)<br><br>
+5.**最终版本：实体识别+关系抽取**<br><br>
+![](https://github.com/renjunxiang/Text_Annotation/blob/master/picture/relation.jpg)<br><br>
 
 ### Softmax的效果
 1.**分词倾向于逐个字切分，勉强能看。**<br><br>

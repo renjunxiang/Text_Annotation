@@ -14,17 +14,17 @@ params = {
 }
 
 # train_x = np.load(DIR + '/data/train_x.npy')
-# train_y = np.load(DIR + '/data/train_y_s.npy')
+# train_y = np.load(DIR + '/data/train_y.npy')
 #
 # # model=train_relation(x=train_x,y=train_y,method='SVM',model_path=DIR+'/model/relation/SVM.model')
-# model = train_relation(x=train_x, y=train_y, num_tag=2,
+# model = train_relation(x=train_x, y=train_y, num_tag=3,
 #                        batchsize=64, epoch=1,
 #                        method='DL', model_path=DIR + '/model/relation/DL.h5')
 
-
 method = 'DL'
 model = load_model(DIR + '/model/relation/DL.h5')
-m=model.predict(np.ones([1,512]))
+# 不先使用一下keras的模型后续会报计算图错误...
+m = model.predict(np.ones([1, 512]))
 
 regulations = [['n', [1]],
                ['n', [2, 3, 4]],
@@ -55,6 +55,16 @@ while True:
                            annotation=y_predict[0],
                            model=model,
                            method='DL',
-                           tags=['null', 'nv'])
-    print('\n分析结果：\n',
-          result)
+                           tags=['null', '主谓', '动宾'])
+
+    print('\n实体识别：\n')
+    for i in result['entities']:
+        print(i)
+    print('\n关系抽取：\n')
+    for i in result['relations']:
+        print('实体1',i['entity1'])
+        print('实体2', i['entity2'])
+        print('关系', i['relation'])
+        print('\n')
+    # print('\n分析结果：\n',
+    #       result)
