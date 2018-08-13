@@ -1,12 +1,15 @@
 import tensorflow as tf
 
+
 def model_softmax(input_data=None,
                   output_targets=None,
                   num_words=3000,
                   num_units=128,
                   num_layers=2,
                   num_tags=5,
-                  batchsize=1):
+                  batchsize=1,
+                  train=True
+                  ):
     """
 
     :param input_data:
@@ -16,6 +19,7 @@ def model_softmax(input_data=None,
     :param num_layers:
     :param num_tags:标签数量
     :param batchsize: 1代表生成，大于1代表训练
+    :param train: 训练还是预测
     :return:
     """
     tensors = {}
@@ -39,26 +43,29 @@ def model_softmax(input_data=None,
         weights = tf.Variable(tf.truncated_normal([num_units, num_tags]))
         bias = tf.Variable(tf.zeros(shape=[num_tags]))
         logits = tf.nn.bias_add(tf.matmul(output, weights), bias=bias)
+        prediction = tf.reshape(tf.argmax(logits, axis=1, output_type=tf.int32),
+                                shape=[batchsize, -1])
 
     # 训练的时候计算loss,target用独热编码;生成的时候只需要计算logits
-    if batchsize > 1:
+    if train:
         with tf.name_scope('loss'):
             labels = tf.reshape(output_targets, [-1])
             loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=labels, logits=logits)
             total_loss = tf.reduce_mean(loss)
+            accu = tf.reduce_mean(tf.cast(tf.equal(output_targets, prediction),
+                                          dtype=tf.float32))
 
         train_op = tf.train.AdamOptimizer(learning_rate=0.01).minimize(loss)
 
         tensors['initial_state'] = initial_state
         tensors['output'] = output
-        tensors['train_op'] = train_op
-        tensors['total_loss'] = total_loss
-        tensors['loss'] = total_loss
         tensors['last_state'] = last_state
+        tensors['train_op'] = train_op
+        tensors['prediction'] = prediction
+        tensors['loss'] = total_loss
+        tensors['accu'] = accu
     else:
         # 和CRF的输出保持统一
-        prediction = tf.expand_dims(tf.argmax(logits, axis=1),0)
         tensors['prediction'] = prediction
 
     return tensors
-

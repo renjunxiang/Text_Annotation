@@ -43,9 +43,9 @@ while True:
 
     # text='医疗机构变更单位名称、法定代表人或负责人'
     y_predict, output_fb = annotate(text=text,
+                                    batchsize=1,
                                     data_process_path=DIR + '/model/%s/model_pos/data_process.pkl' % (params['model']),
                                     model_path=DIR + '/model/%s/model_pos/' % (params['model']),
-                                    train=False,
                                     **params)
 
     result = find_relation(text=text,

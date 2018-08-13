@@ -43,7 +43,8 @@ def annotate_cut(num_units=128,
                                     num_layers=num_layers,
                                     batchsize=1,
                                     num_tags=num_tags,
-                                    max_seq_len=len(text))
+                                    max_seq_len=len(text),
+                                    train=False)
             elif model == 'softmax':
                 tensors = model_softmax(input_data=input_data,
                                         output_targets=output_targets,
@@ -51,7 +52,8 @@ def annotate_cut(num_units=128,
                                         num_units=num_units,
                                         num_layers=num_layers,
                                         batchsize=1,
-                                        num_tags=num_tags)
+                                        num_tags=num_tags,
+                                        train=False)
 
             saver = tf.train.Saver(tf.global_variables())
             initializer = tf.global_variables_initializer()

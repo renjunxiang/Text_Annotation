@@ -25,7 +25,8 @@ def train_annotation(x=None,
                             num_layers=num_layers,
                             batchsize=batchsize,
                             num_tags=num_tags,
-                            max_seq_len=max_seq_len)
+                            max_seq_len=max_seq_len,
+                            train=True)
     elif model == 'softmax':
         tensors = model_softmax(input_data=input_data,
                                 output_targets=output_targets,
@@ -33,7 +34,8 @@ def train_annotation(x=None,
                                 num_units=num_units,
                                 num_layers=num_layers,
                                 batchsize=batchsize,
-                                num_tags=num_tags)
+                                num_tags=num_tags,
+                                train=True)
 
     saver = tf.train.Saver(tf.global_variables(), max_to_keep=20)
     initializer = tf.global_variables_initializer()
@@ -51,9 +53,11 @@ def train_annotation(x=None,
                 y_batch = y[index_batch]
 
                 print(x_batch.shape)
-                loss, _ = sess.run([
+                loss, accu, _ = sess.run([
                     tensors['loss'],
+                    tensors['accu'],
                     tensors['train_op']
                 ], feed_dict={input_data: x_batch, output_targets: y_batch})
-                print('Epoch: %d, batch: %d, loss: %.6f' % (epoch + 1, batch + 1, loss))
+                print('Epoch: %d, batch: %d, loss: %.6f, accu: %.6f' %
+                      (epoch + 1, batch + 1, loss, accu))
             saver.save(sess, model_path, global_step=epoch)

@@ -27,20 +27,24 @@ def locate(regulations=None, annotation=None):
             if len(regulation) == 1:
                 locations.append([location, annotation_type])
             else:
-                annotation_next = annotation[num]
-                # 中间字符
-                while annotation_next == regulation[1]:
-                    location.append(num)
-                    num += 1
+                #避免最后一个标注预测成首字符
+                if num < len(annotation):
                     annotation_next = annotation[num]
-                # 是否有终止符，没有就是标注逻辑错误，跳过
-                if annotation_next == regulation[-1]:
-                    location.append(num)
-                    locations.append([location, annotation_type])
-                    num += 1
+                    # 中间字符
+                    while annotation_next == regulation[1] and num < len(annotation):
+                        location.append(num)
+                        num += 1
+                        annotation_next = annotation[num]
+                    # 是否有终止符，没有就是标注逻辑错误，跳过
+                    if annotation_next == regulation[-1]:
+                        location.append(num)
+                        locations.append([location, annotation_type])
+                        num += 1
+                    else:
+                        num += 1
+                        continue
                 else:
-                    num += 1
-                    continue
+                    locations.append([location, 'U'])
         else:
             num += 1
             continue

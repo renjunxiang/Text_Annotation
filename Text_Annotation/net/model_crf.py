@@ -8,7 +8,8 @@ def model_crf(input_data=None,
               num_layers=2,
               batchsize=64,
               num_tags=10,
-              max_seq_len=40):
+              max_seq_len=40,
+              train=True):
     """
 
     :param input_data:
@@ -19,6 +20,7 @@ def model_crf(input_data=None,
     :param batchsize: 1代表生成，大于1代表训练
     :param num_tags:标签数量
     :param max_seq_len: 句子长度
+    :param train: 训练还是预测
     :return:
     """
     tensors = {}
@@ -76,18 +78,18 @@ def model_crf(input_data=None,
                                                             sequence_length=sequence_lengths_t)
 
         loss = tf.reduce_mean(-log_likelihood)
+        accu=tf.reduce_mean(tf.cast(tf.equal(output_targets,decode_tags),
+                                    dtype=tf.float32))
 
-    if batchsize > 1:
-
+    if train:
         train_op = tf.train.AdamOptimizer(learning_rate=0.01).minimize(loss)
-        tensors['train_op'] = train_op
         tensors['output_fb'] = output_fb
-        tensors['transition_params'] = transition_params
-        tensors['loss'] = loss
         tensors['prediction'] = decode_tags
+        tensors['train_op'] = train_op
+        tensors['loss'] = loss
+        tensors['accu'] = accu
     else:
         tensors['output_fb'] = output_fb
-        tensors['transition_params'] = transition_params
         tensors['prediction'] = decode_tags
 
     return tensors

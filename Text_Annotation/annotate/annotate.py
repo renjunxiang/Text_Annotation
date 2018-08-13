@@ -14,6 +14,7 @@ def annotate(text=None,
              num_layers=2,
              num_tags=5,
              model='crf',
+             batchsize=1,
              model_path=None,
              data_process_path=None,
              train=True):
@@ -39,17 +40,19 @@ def annotate(text=None,
                             num_words=num_words,
                             num_units=num_units,
                             num_layers=num_layers,
-                            batchsize=1,
+                            batchsize=batchsize,
                             num_tags=num_tags,
-                            max_seq_len=len(text))
+                            max_seq_len=len(text),
+                            train=False)
     elif model == 'softmax':
         tensors = model_softmax(input_data=input_data,
                                 output_targets=output_targets,
                                 num_words=num_words,
                                 num_units=num_units,
                                 num_layers=num_layers,
-                                batchsize=1,
-                                num_tags=num_tags)
+                                batchsize=batchsize,
+                                num_tags=num_tags,
+                                train=False)
 
     saver = tf.train.Saver(tf.global_variables())
     initializer = tf.global_variables_initializer()

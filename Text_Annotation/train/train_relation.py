@@ -12,9 +12,15 @@ def train_relation(x=None,
     """
     关系分类器
     :param x: 特征变量,array
+        np.array([[1, 2, 3, 4],
+                  [2, 3, 4, 5],
+                  [3, 4, 5, 6],
+                  [4, 5, 6, 7]])
     :param y: 标签,array
+        np.array([[1, 0, 1, 2]])
     :param num_tag: 标签数量,int
-    :param method: 方法名称,str,SVM,Logistic,DL
+    :param method: 方法名称,str
+        SVM,Logistic,DL
     :param batchsize: int
     :param epoch: int
     :param model_path: 模型保存路径,str
