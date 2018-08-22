@@ -17,7 +17,7 @@ def model_crf(input_data=None,
     :param num_words:
     :param num_units:
     :param num_layers:
-    :param batchsize: 1代表生成，大于1代表训练
+    :param batchsize:
     :param num_tags:标签数量
     :param max_seq_len: 句子长度
     :param train: 训练还是预测

@@ -18,7 +18,7 @@ def model_softmax(input_data=None,
     :param num_units:
     :param num_layers:
     :param num_tags:标签数量
-    :param batchsize: 1代表生成，大于1代表训练
+    :param batchsize:
     :param train: 训练还是预测
     :return:
     """

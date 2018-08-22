@@ -12,6 +12,11 @@ def locate(regulations=None, annotation=None):
     :return:定位结果,list
         [[[0], 'n'], [[1, 2, 3], 'n'], [[8], 'v'], [[9, 10, 11], 'v']
     """
+    # #避免标注为0报错,替换为未知
+    # for i in len(annotation):
+    #     if annotation[i] == 0:
+    #         annotation[i] == regulations[-1][-1][0]
+
     # 规则编码转字典
     regulation_dict = {i[1][0]: i for i in regulations}
     locations = []
@@ -31,18 +36,21 @@ def locate(regulations=None, annotation=None):
                 if num < len(annotation):
                     annotation_next = annotation[num]
                     # 中间字符
-                    while annotation_next == regulation[1] and num < len(annotation):
+                    while annotation_next == regulation[1]:
                         location.append(num)
                         num += 1
+                        if num >= len(annotation):
+                            break
                         annotation_next = annotation[num]
-                    # 是否有终止符，没有就是标注逻辑错误，跳过
-                    if annotation_next == regulation[-1]:
-                        location.append(num)
-                        locations.append([location, annotation_type])
-                        num += 1
                     else:
-                        num += 1
-                        continue
+                        # 是否有终止符，没有就是标注逻辑错误，跳过
+                        if annotation_next == regulation[-1]:
+                            location.append(num)
+                            locations.append([location, annotation_type])
+                            num += 1
+                        else:
+                            num += 1
+                            continue
                 else:
                     locations.append([location, 'U'])
         else:
