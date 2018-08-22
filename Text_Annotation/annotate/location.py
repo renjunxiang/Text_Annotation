@@ -12,10 +12,10 @@ def locate(regulations=None, annotation=None):
     :return:定位结果,list
         [[[0], 'n'], [[1, 2, 3], 'n'], [[8], 'v'], [[9, 10, 11], 'v']
     """
-    # #避免标注为0报错,替换为未知
-    # for i in len(annotation):
-    #     if annotation[i] == 0:
-    #         annotation[i] == regulations[-1][-1][0]
+    # 避免标注为0seq2text不能识别,替换为未知
+    for num, i in enumerate(annotation):
+        if i == 0:
+            annotation[num] == regulations[-1][-1][0]
 
     # 规则编码转字典
     regulation_dict = {i[1][0]: i for i in regulations}
@@ -23,16 +23,16 @@ def locate(regulations=None, annotation=None):
     num = 0
     while num < len(annotation):
         entity_start = annotation[num]
+        location = [num]
         # 找到起始编码
         if entity_start in regulation_dict:
             annotation_type, regulation = regulation_dict[entity_start]
-            location = [num]
             num += 1
             # 独立字符
             if len(regulation) == 1:
                 locations.append([location, annotation_type])
             else:
-                #避免最后一个标注预测成首字符
+                # 避免最后一个标注预测成首字符
                 if num < len(annotation):
                     annotation_next = annotation[num]
                     # 中间字符
@@ -40,6 +40,8 @@ def locate(regulations=None, annotation=None):
                         location.append(num)
                         num += 1
                         if num >= len(annotation):
+                            # 结尾被截断字符替换成U
+                            locations += ['U'] * len(location)
                             break
                         annotation_next = annotation[num]
                     else:
@@ -49,11 +51,17 @@ def locate(regulations=None, annotation=None):
                             locations.append([location, annotation_type])
                             num += 1
                         else:
+                            # 非正常结束字符替换成U
+                            location.append(num)
                             num += 1
+                            num_old=num-len(location)
+                            locations+=[[[i],'U']for i in range(num_old,num)]
                             continue
                 else:
                     locations.append([location, 'U'])
         else:
+            # 非起始字符替换成U
+            locations.append([location, 'U'])
             num += 1
             continue
 
