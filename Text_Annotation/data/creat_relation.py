@@ -8,6 +8,7 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 
 def creat_relation(sentence_vector,
                    regulations,
+                   regular,
                    annotation):
     """
     标注结果 12341234 -> 实体定位 [[[0, 1], 'v'], [[2, 3, 4, 5], 'n']]
@@ -16,12 +17,11 @@ def creat_relation(sentence_vector,
     实体组合 -> 训练集标签 [[[7, 7, 3, 3], [0, 1]], [[3, 3, 7, 7], [1, 0]]]
     :param sentence_vector:句子向量
     :param regulations:标注规则
+    :param regular:配对规则
     :param annotation:标注结果
     :return:
     """
     locations = locate(regulations, annotation)
-
-    regular = [['v', 'n'], ['n', 'v']]
     entity_pairs, vector_pairs = pair_vector(sentence_vector, locations, regular)
 
     train_x = []
@@ -59,24 +59,26 @@ def creat_relations(texts,
                    ['v', [5]],
                    ['v', [6, 7, 8]],
                    ['U', [9]]]
+    regular = [['v', 'n'], ['n', 'v']]
 
     train_x, train_y = [], []
     for num, text in enumerate(texts):
         print(num)
-        if lock:
+        if lock is not None:
             lock.acquire()
         output_fb = annotate(text=text,
                              data_process_path=data_process_path,
                              model_path=model_path,
                              train=True,
                              **params)
-        if lock:
+        if lock is not None:
             lock.release()
         time.sleep(0.05)
 
-        train_x_one, train_y_one = creat_relation(output_fb[0],
-                                                  regulations,
-                                                  targets[num])
+        train_x_one, train_y_one = creat_relation(sentence_vector=output_fb[0],
+                                                  regulations=regulations,
+                                                  regular=regular,
+                                                  annotation=targets[num])
         train_x += train_x_one
         train_y += train_y_one
 
