@@ -135,12 +135,14 @@ def dict_locate_label(text, dictionary={}, regulation=[['U', [10]]]):
     ['材料', [7, 8, 9]],
     ['U', [10]]]
 
-    return = [
-    {'text': '企业', 'type': '主体', 'location': [2, 3]},
-    {'text': '部门经理', 'type': '客体', 'location': [20, 21, 22, 23]},
-    {'text': '身份证', 'type': '材料', 'location': [27, 28, 29]},
-    {'text': '身份证明', 'type': '材料', 'location': [39, 40, 41, 42]}
-    ]
+    return = (
+    [
+    {'location': [0, 1], 'text': '企业', 'type': '主体'}, 
+    {'location': [2, 3, 4, 5], 'text': '部门经理', 'type': '客体'}, 
+    {'location': [6, 7, 8], 'text': '身份证', 'type': '材料'}, 
+    {'location': [9, 10, 11, 12], 'text': '身份证明', 'type': '材料'}
+    ], 
+    [1, 3, 10, 10, 10, 10, 10, 10, 4, 5, 5, 6, 10, 10, 10, 7, 8, 9, 10, 10, 10, 7, 8, 8, 9])
 
     :param text:文本
     :param dictionary:实体库
