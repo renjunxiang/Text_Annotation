@@ -12,10 +12,9 @@ def locate(regulations=None, annotation=None):
     :return:定位结果,list
         [[[0], 'n'], [[1, 2, 3], 'n'], [[8], 'v'], [[9, 10, 11], 'v']
     """
-    # 避免标注为0seq2text不能识别,替换为未知
-    for num, i in enumerate(annotation):
-        if i == 0:
-            annotation[num] == regulations[-1][-1][0]
+    # 避免标注为0,seq2text不能识别,替换为未知
+    U = regulations[-1][-1][0]
+    annotation = np.where(np.array(annotation) == 0, U, annotation)
 
     # 规则编码转字典
     regulation_dict = {i[1][0]: i for i in regulations}
@@ -40,8 +39,8 @@ def locate(regulations=None, annotation=None):
                         location.append(num)
                         num += 1
                         if num >= len(annotation):
-                            # 结尾被截断字符替换成U
-                            locations += ['U'] * len(location)
+                            num_old = num - len(location)
+                            locations += [[[i], 'U'] for i in range(num_old, num)]
                             break
                         annotation_next = annotation[num]
                     else:
@@ -54,13 +53,11 @@ def locate(regulations=None, annotation=None):
                             # 非正常结束字符替换成U
                             location.append(num)
                             num += 1
-                            num_old=num-len(location)
-                            locations+=[[[i],'U']for i in range(num_old,num)]
-                            continue
+                            num_old = num - len(location)
+                            locations += [[[i], 'U'] for i in range(num_old, num)]
                 else:
                     locations.append([location, 'U'])
         else:
-            # 非起始字符替换成U
             locations.append([location, 'U'])
             num += 1
             continue
