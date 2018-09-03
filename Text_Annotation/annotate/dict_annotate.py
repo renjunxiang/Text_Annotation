@@ -78,11 +78,17 @@ def dict_locate(text, dictionary={}):
     return text_location
 
 
-def dict_label(text, regulation=[['U', [10]]]):
+def dict_label(text, dictionary={}, regulation=[['U', [10]]]):
     """
-    根据词库做实体定位
+    根据词库做实体标注
 
     text = '企业提供部门经理的身份证和身份证明'
+
+    dictionary = {
+        '主体': ['企业'],
+        '客体': ['部门经理'],
+        '材料': ['身份证', '身份证明']
+    }
 
     regulation = [
     ['主体', [1, 2, 3]],
@@ -97,7 +103,7 @@ def dict_label(text, regulation=[['U', [10]]]):
     :return:实体标注结果
     """
     regulation = {i[0]: i[1] for i in regulation}
-    entities = list(_dictionary.values())
+    entities = list(dictionary.values())
     entities_all = []
     entities_len_all = []
     for i in entities:
@@ -112,8 +118,8 @@ def dict_label(text, regulation=[['U', [10]]]):
 
     text_annotation = []
     for text_entity in text_entities:
-        for title in _dictionary:
-            if text_entity in _dictionary[title]:
+        for title in dictionary:
+            if text_entity in dictionary[title]:
                 if len(text_entity) == 2:
                     text_annotation += [regulation[title][0], regulation[title][2]]
                 else:
@@ -214,5 +220,5 @@ if __name__ == '__main__':
     print('\n实体定位：\n')
     for i in dict_locate(_text, _dictionary):
         print(i)
-    print('\n实体标注：\n', dict_label(_text, _regulation))
+    print('\n实体标注：\n', dict_label(_text, _dictionary, _regulation))
     print('\n实体定位+标注：\n', dict_locate_label(_text, _dictionary, _regulation))
